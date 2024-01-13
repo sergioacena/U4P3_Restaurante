@@ -8,6 +8,7 @@ class BaseException extends Error {
   }
 }
 
+//EXCEPCIONES PROVISIONALES
 class AbstractClassException extends BaseException {
   constructor(fileName, lineNumber) {
     super("La clase no puede ser abstracta", fileName, lineNumber);

@@ -221,14 +221,54 @@ const RestaurantsManager = (function () {
       #menus = []; //Agregacion de platos
       #restaurants = [];
 
-      //Creamos el constructor de la clase VideoSystem con solo el nombre
+      //Creamos el constructor de RestaurantsManager con solo el nombre
       constructor(name) {
         this.#name = name;
 
         //Controlamos que el nombre no esté vacio
         if ((this.#name = "")) throw new EmptyValueException();
       }
+
+      get name() {
+        return this.#name;
+      }
+
+      set name(value) {
+        this.#name = value;
+      }
+
+      //Iterador de categorías
+      getCategories() {
+        return this.#categories[Symbol.iterator]();
+      }
+      //Iterador de menús
+      getMenu() {
+        return this.#menus[Symbol.iterator]();
+      }
+      //Iterador de alérgenos
+      getAllergen() {
+        return this.#allergens[Symbol.iterator]();
+      }
+      //Iterador de restaurantes
+      getRestaurants() {
+        return this.#restaurants[Symbol.iterator]();
+      }
+
+      //Método creado para poder añadir categorías
+      addCategory(elem) {
+        if (!(elem instanceof Category) || elem == null)
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+        for (const existingCategory of this.#categories) {
+          if (existingCategory.name === elem.name) {
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+          }
+        }
+        this.#categories.push(elem); //Añade la categoría al array
+        return this; //Se pueden encadenar elementos en este método
+      }
     }
+
+    return new RestaurantsManager();
   }
   return {
     getInstance() {
