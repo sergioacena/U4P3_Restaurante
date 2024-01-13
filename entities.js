@@ -266,6 +266,26 @@ const RestaurantsManager = (function () {
         this.#categories.push(elem); //Añade la categoría al array
         return this; //Se pueden encadenar elementos en este método
       }
+
+      //Método que elimina categorías
+      removeCategory(elem) {
+        const index = this.#categories.findIndex(function (category) {
+          //Se busca a través de un index el elemento deseado
+          return category.name === elem.name;
+        });
+
+        if (index === -1) {
+          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+        } else {
+          this.#categories.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+        }
+
+        // if (index !== -1) {
+        //   this.#categories.splice(index, 1);
+        // }
+
+        return this; //Se pueden encadenar elementos en este método
+      }
     }
 
     return new RestaurantsManager();

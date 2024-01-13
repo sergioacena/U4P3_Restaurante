@@ -41,6 +41,17 @@ class NotExistingException extends BaseException {
   }
 }
 
+class NotRegisteredElementException extends BaseException {
+  constructor(fileName, lineNumber) {
+    super(
+      "El elemento introducido no está registrado en la colección",
+      fileName,
+      lineNumber
+    );
+    this.name = "NotRegisteredElementException";
+  }
+}
+
 class InvalidTypeException extends BaseException {
   constructor(fileName, lineNumber) {
     super(
