@@ -209,3 +209,33 @@ class Coordinate {
     this.#longitude = newLongitude;
   }
 }
+
+const RestaurantsManager = (function () {
+  let instantiated;
+  function init() {
+    class RestaurantsManager {
+      #name;
+      #categories = []; //Los platos pueden pertenecer a mas de una categoría
+      #allergens = []; //Cada plato puede tener más de un alérgeno
+      #dishes = [];
+      #menus = []; //Agregacion de platos
+      #restaurants = [];
+
+      //Creamos el constructor de la clase VideoSystem con solo el nombre
+      constructor(name) {
+        this.#name = name;
+
+        //Controlamos que el nombre no esté vacio
+        if ((this.#name = "")) throw new EmptyValueException();
+      }
+    }
+  }
+  return {
+    getInstance() {
+      if (!instantiated) {
+        instantiated = init();
+      }
+      return instantiated;
+    },
+  };
+})();
