@@ -1,3 +1,14 @@
+//Importación clases entities
+import {
+  Dish,
+  Category,
+  Allergen,
+  Menu,
+  Restaurant,
+  Coordinate,
+  RestaurantsManager,
+} from "./entities.js";
+
 //Creación objetos
 const manager = RestaurantsManager.getInstance();
 
@@ -215,4 +226,23 @@ try {
 
 for (const restaurant of restaurantIterator2) {
   console.log(restaurant.toString()); //Muestra todos los restaurantes
+}
+
+console.log("----ASSIGN CATEGORY TO DISH----");
+try {
+  manager.assignCategoryToDish(category2); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignCategoryToDish(dish2); //Salta NullException de nuevo
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignCategoryToDish(category2, dish2); //Se añade la categoría correctamente al plato 2
+} catch (error) {
+  console.log(error);
 }

@@ -41,6 +41,13 @@ class NotExistingException extends BaseException {
   }
 }
 
+class NullException extends BaseException {
+  constructor(fileName, lineNumber) {
+    super("El elemento introducido no puede ser null", fileName, lineNumber);
+    this.name = "NullException";
+  }
+}
+
 class NotRegisteredElementException extends BaseException {
   constructor(fileName, lineNumber) {
     super(
@@ -76,3 +83,16 @@ class InvalidLongitudeException extends BaseException {
     this.name = "InvalidLongitudeException";
   }
 }
+
+//Exportación de excepciones
+export {
+  AbstractClassException,
+  EmptyValueException,
+  AlreadyExistsException,
+  NotExistingException,
+  NullException,
+  NotRegisteredElementException,
+  InvalidTypeException,
+  InvalidLatitudeException,
+  InvalidLongitudeException,
+};

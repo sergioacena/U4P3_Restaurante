@@ -1,3 +1,19 @@
+"use strict";
+
+//Importación de excepciones - módulos
+
+import {
+  AbstractClassException,
+  EmptyValueException,
+  AlreadyExistsException,
+  NotExistingException,
+  NullException,
+  NotRegisteredElementException,
+  InvalidTypeException,
+  InvalidLatitudeException,
+  InvalidLongitudeException,
+} from "./exception.js";
+
 //LISTADO OBJETOS --
 
 //1.Objeto Dish
@@ -304,10 +320,10 @@ const RestaurantsManager = (function () {
       //Adición de menús
       addMenu(elem) {
         if (!(elem instanceof Menu) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un menú o ser null
         for (const existingMenu of this.#menus) {
           if (existingMenu.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el menú ya exista
           }
         }
         this.#menus.push(elem); //Añade el menú al array
@@ -333,13 +349,13 @@ const RestaurantsManager = (function () {
       //Adición de alérgenos
       addAllergen(elem) {
         if (!(elem instanceof Allergen) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un alérgeno o ser null
         for (const existingAllergen of this.#allergens) {
           if (existingAllergen.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el alérgeno ya exista
           }
         }
-        this.#allergens.push(elem); //Añade el menú al array
+        this.#allergens.push(elem); //Añade el alérgeno al array
         return this; //Se pueden encadenar elementos en este método
       }
 
@@ -362,13 +378,13 @@ const RestaurantsManager = (function () {
       //Adición de platos
       addDish(elem) {
         if (!(elem instanceof Dish) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un plato o ser null
         for (const existingDish of this.#dishes) {
           if (existingDish.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el plato ya exista
           }
         }
-        this.#dishes.push(elem); //Añade el menú al array
+        this.#dishes.push(elem); //Añade el plato al array
         return this; //Se pueden encadenar elementos en este método
       }
 
@@ -391,13 +407,13 @@ const RestaurantsManager = (function () {
       //Adición de restaurantes
       addRestaurant(elem) {
         if (!(elem instanceof Restaurant) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un restaurante o ser null
         for (const existingRestaurant of this.#restaurants) {
           if (existingRestaurant.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el restaurante ya exista
           }
         }
-        this.#restaurants.push(elem); //Añade el menú al array
+        this.#restaurants.push(elem); //Añade el restaurante al array
         return this; //Se pueden encadenar elementos en este método
       }
 
@@ -416,6 +432,45 @@ const RestaurantsManager = (function () {
 
         return this; //Se pueden encadenar elementos en este método
       }
+
+      //Asignar categoría a un plato
+      assignCategoryToDish(category, dish) {
+        if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
+
+        // const categoryExists = this.#categories.some(function(existingCategory) {
+        //   return existingCategory.name === category.name;
+        // });
+
+        //Verifica si la categoría y el plato existen en el sistema --- arrow functions
+        //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
+        const categoryExists = this.#categories.some(
+          (existingCategory) => existingCategory.name === category.name
+        );
+        //lo mismo con dish
+        const dishExists = this.#dishes.some(
+          (existingDish) => existingDish.name === dish.name
+        );
+
+        //Si la categoría no existe, la agregamos al sistema
+        if (!categoryExists) {
+          this.addCategory(category);
+          console.log("Se ha añadido la nueva categoría al sistema.");
+        }
+
+        //Si el plato no existe, lo agregamos al sistema
+        if (!dishExists) {
+          this.addDish(dish);
+          console.log("Se ha añadido el nuevo plato al sistema.");
+        }
+
+        //Asignar la categoría al plato
+        //Si el plato ya tiene una categoría, se usa ese valor, si no se asigna un array vacío
+        dish.categories = dish.categories || [];
+        dish.categories.push(category);
+        console.log("La categoría ha sido añadida al plato especificado.");
+
+        return this; // Permitir encadenar llamadas de métodos
+      }
     }
 
     return new RestaurantsManager();
@@ -429,3 +484,14 @@ const RestaurantsManager = (function () {
     },
   };
 })();
+
+//Exportación clases para testeo
+export {
+  Dish,
+  Category,
+  Allergen,
+  Menu,
+  Restaurant,
+  Coordinate,
+  RestaurantsManager,
+};
