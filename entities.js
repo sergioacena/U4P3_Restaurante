@@ -251,9 +251,21 @@ const RestaurantsManager = (function () {
       #menus = []; //Agregacion de platos
       #restaurants = [];
 
-      //Creamos el constructor de RestaurantsManager con solo el nombre
-      constructor(name) {
+      //Creamos el constructor de RestaurantsManager
+      constructor(
+        name,
+        categories = [],
+        allergens = [],
+        dishes = [],
+        menus = [],
+        restaurants = []
+      ) {
         this.#name = name;
+        this.#categories = categories;
+        this.#allergens = allergens;
+        this.#dishes = dishes;
+        this.#menus = menus;
+        this.#restaurants = restaurants;
 
         //Controlamos que el nombre no esté vacio
         if ((this.#name = "")) throw new EmptyValueException();
@@ -298,7 +310,7 @@ const RestaurantsManager = (function () {
           }
         }
         this.#categories.push(elem); //Añade la categoría al array
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Método que elimina categorías
@@ -314,7 +326,7 @@ const RestaurantsManager = (function () {
           this.#categories.splice(index, 1); //Se elimina el elemento con el índice deseado del array
         }
 
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Adición de menús
@@ -327,7 +339,7 @@ const RestaurantsManager = (function () {
           }
         }
         this.#menus.push(elem); //Añade el menú al array
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Eliminación de menús
@@ -343,7 +355,7 @@ const RestaurantsManager = (function () {
           this.#menus.splice(index, 1); //Se elimina el elemento con el índice deseado del array
         }
 
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Adición de alérgenos
@@ -356,7 +368,7 @@ const RestaurantsManager = (function () {
           }
         }
         this.#allergens.push(elem); //Añade el alérgeno al array
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Eliminación de alérgenos
@@ -372,7 +384,7 @@ const RestaurantsManager = (function () {
           this.#allergens.splice(index, 1); //Se elimina el elemento con el índice deseado del array
         }
 
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Adición de platos
@@ -385,7 +397,7 @@ const RestaurantsManager = (function () {
           }
         }
         this.#dishes.push(elem); //Añade el plato al array
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Eliminación de platos
@@ -401,7 +413,7 @@ const RestaurantsManager = (function () {
           this.#dishes.splice(index, 1); //Se elimina el elemento con el índice deseado del array
         }
 
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Adición de restaurantes
@@ -430,7 +442,7 @@ const RestaurantsManager = (function () {
           this.#restaurants.splice(index, 1); //Se elimina el elemento con el índice deseado del array
         }
 
-        return this; //Se pueden encadenar elementos en este método
+        return this; //Se pueden encadenar llamadas
       }
 
       //Asignar categoría a un plato
@@ -469,7 +481,48 @@ const RestaurantsManager = (function () {
         dish.categories.push(category);
         console.log("La categoría ha sido añadida al plato especificado.");
 
-        return this; // Permitir encadenar llamadas de métodos
+        return this; //Se puede encadenar
+      }
+
+      //Desasignar un plato de una categoría
+      deassignCategoryToDish(category, dish) {
+        if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
+        //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
+        const categoryExists = this.#categories.some(
+          (existingCategory) => existingCategory.name === category.name
+        );
+        //lo mismo con dish
+        const dishExists = this.#dishes.some(
+          (existingDish) => existingDish.name === dish.name
+        );
+
+        if (!categoryExists || !dishExists) throw new NotExistingException(); //Lanza excepción en el caso de no estar implementada la categoría o plato
+        if (categoryExists && dishExists) {
+          //Encuentra la categoría a la que se debe desasignar el plato
+          const targetCategory = this.#categories.find(
+            (existingCategory) => existingCategory.name === category.name
+          );
+
+          //Verifica si el plato está asignado a la categoría
+          if (
+            targetCategory &&
+            targetCategory.dishes &&
+            targetCategory.dishes.includes(dish)
+          ) {
+            //Elimina el plato de la categoría
+            targetCategory.dishes = targetCategory.dishes.filter(
+              (existingDish) => existingDish.name !== dish.name
+            );
+
+            console.log(
+              "El plato ha sido desasignado de la categoría indicada."
+            );
+          } else {
+            console.log("El plato no está asignado a la categoría indicada.");
+          }
+        }
+
+        return this;
       }
     }
 

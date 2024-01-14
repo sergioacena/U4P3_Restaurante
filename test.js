@@ -246,3 +246,22 @@ try {
 } catch (error) {
   console.log(error);
 }
+
+console.log("----DEASSIGN CATEGORY TO DISH----");
+try {
+  manager.deassignCategoryToDish(category2); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.deassignCategoryToDish(category2, dish1); //Salta NullException de nuevo
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.deassignCategoryToDish(category2, dish2); //NO SE DESASIGNA CORRECTAMENTE
+} catch (error) {
+  console.log(error);
+}
