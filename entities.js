@@ -254,7 +254,7 @@ const RestaurantsManager = (function () {
         return this.#restaurants[Symbol.iterator]();
       }
 
-      //Método creado para poder añadir categorías
+      //Creación de categorías
       addCategory(elem) {
         if (!(elem instanceof Category) || elem == null)
           throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
@@ -284,6 +284,19 @@ const RestaurantsManager = (function () {
         //   this.#categories.splice(index, 1);
         // }
 
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Creación de menús
+      addMenu(elem) {
+        if (!(elem instanceof Menu) || elem == null)
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+        for (const existingMenu of this.#menus) {
+          if (existingMenu.name === elem.name) {
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+          }
+        }
+        this.#menus.push(elem); //Añade la categoría al array
         return this; //Se pueden encadenar elementos en este método
       }
     }
