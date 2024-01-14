@@ -147,7 +147,8 @@ class Restaurant {
   #name;
   #description;
   #location;
-  constructor(name, description = "", location) {
+  constructor(name, description = "", location = undefined) {
+    //Location debe ser opcional por lo que se pone undefined
     this.#name = name;
     this.#description = description;
     this.#location = location;
@@ -178,9 +179,22 @@ class Restaurant {
   }
 
   toString() {
+    //FORMA NO VÁLIDA SI QUEREMOS QUE LOCATION SEA OPCIONAL
+    // return `Restaurant: ${this.#name}, Description: ${
+    //   this.#description
+    // }, Location: (${this.#location.latitude}, ${this.#location.longitude})`;
+
+    //Hacemos a location un string, y en el caso de añadirse al crear el objeto se mostrará en el array
+    let locationString = "";
+    if (this.#location) {
+      locationString = `, Location: (${this.#location.latitude}, ${
+        this.#location.longitude
+      })`;
+    }
+    //En el caso de no añadir una location, solo se mostrará el nombre y la descripción añadidos
     return `Restaurant: ${this.#name}, Description: ${
       this.#description
-    }, Location: (${this.#location.latitude}, ${this.#location.longitude})`;
+    }${locationString}`;
   }
 }
 
@@ -253,8 +267,12 @@ const RestaurantsManager = (function () {
       getRestaurants() {
         return this.#restaurants[Symbol.iterator]();
       }
+      //Iterador de platos - NO LO PIDE PERO LO HAGO PARA LAS PRUEBAS DE ADD/REMOVE DISH
+      getDish() {
+        return this.#dishes[Symbol.iterator]();
+      }
 
-      //Creación de categorías
+      //Adición de categorías
       addCategory(elem) {
         if (!(elem instanceof Category) || elem == null)
           throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
@@ -280,14 +298,10 @@ const RestaurantsManager = (function () {
           this.#categories.splice(index, 1); //Se elimina el elemento con el índice deseado del array
         }
 
-        // if (index !== -1) {
-        //   this.#categories.splice(index, 1);
-        // }
-
         return this; //Se pueden encadenar elementos en este método
       }
 
-      //Creación de menús
+      //Adición de menús
       addMenu(elem) {
         if (!(elem instanceof Menu) || elem == null)
           throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
@@ -296,7 +310,110 @@ const RestaurantsManager = (function () {
             throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
           }
         }
-        this.#menus.push(elem); //Añade la categoría al array
+        this.#menus.push(elem); //Añade el menú al array
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Eliminación de menús
+      removeMenu(elem) {
+        const index = this.#menus.findIndex(function (menu) {
+          //Se busca a través de un index el elemento deseado
+          return menu.name === elem.name;
+        });
+
+        if (index === -1) {
+          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+        } else {
+          this.#menus.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+        }
+
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Adición de alérgenos
+      addAllergen(elem) {
+        if (!(elem instanceof Allergen) || elem == null)
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+        for (const existingAllergen of this.#allergens) {
+          if (existingAllergen.name === elem.name) {
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+          }
+        }
+        this.#allergens.push(elem); //Añade el menú al array
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Eliminación de alérgenos
+      removeAllergen(elem) {
+        const index = this.#allergens.findIndex(function (allergen) {
+          //Se busca a través de un index el elemento deseado
+          return allergen.name === elem.name;
+        });
+
+        if (index === -1) {
+          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+        } else {
+          this.#allergens.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+        }
+
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Adición de platos
+      addDish(elem) {
+        if (!(elem instanceof Dish) || elem == null)
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+        for (const existingDish of this.#dishes) {
+          if (existingDish.name === elem.name) {
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+          }
+        }
+        this.#dishes.push(elem); //Añade el menú al array
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Eliminación de platos
+      removeDish(elem) {
+        const index = this.#dishes.findIndex(function (dishes) {
+          //Se busca a través de un index el elemento deseado
+          return dishes.name === elem.name;
+        });
+
+        if (index === -1) {
+          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+        } else {
+          this.#dishes.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+        }
+
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Adición de restaurantes
+      addRestaurant(elem) {
+        if (!(elem instanceof Restaurant) || elem == null)
+          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+        for (const existingRestaurant of this.#restaurants) {
+          if (existingRestaurant.name === elem.name) {
+            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+          }
+        }
+        this.#restaurants.push(elem); //Añade el menú al array
+        return this; //Se pueden encadenar elementos en este método
+      }
+
+      //Eliminación de restaurantes
+      removeRestaurant(elem) {
+        const index = this.#restaurants.findIndex(function (restaurant) {
+          //Se busca a través de un index el elemento deseado
+          return restaurant.name === elem.name;
+        });
+
+        if (index === -1) {
+          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+        } else {
+          this.#restaurants.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+        }
+
         return this; //Se pueden encadenar elementos en este método
       }
     }
