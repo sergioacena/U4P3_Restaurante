@@ -268,16 +268,16 @@ const RestaurantsManager = (function () {
         this.#restaurants = restaurants;
 
         //Controlamos que el nombre no esté vacio
-        if ((this.#name = "")) throw new EmptyValueException();
+        if (this.#name === "") throw new EmptyValueException();
       }
 
-      get name() {
-        return this.#name;
-      }
+      // get name() {
+      //   return this.#name;
+      // }
 
-      set name(value) {
-        this.#name = value;
-      }
+      // set name(value) {
+      //   this.#name = value;
+      // }
 
       //Iterador de categorías
       getCategories() {
@@ -300,61 +300,99 @@ const RestaurantsManager = (function () {
         return this.#dishes[Symbol.iterator]();
       }
 
+      //Cogemos la posicion de la categoría en el array
+      #getCategoryPosition(category) {
+        return this.#categories.findIndex((x) => x.name === category.name);
+      }
+
+      //Cogemos la posicion del menu en el array
+      #getMenuPosition(menu) {
+        return this.#menus.findIndex((x) => x.menu.name === menu.name);
+      }
+
       //Adición de categorías
-      addCategory(elem) {
-        if (!(elem instanceof Category) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
-        for (const existingCategory of this.#categories) {
-          if (existingCategory.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+
+      // addCategory(elem) {
+      //   if (!(elem instanceof Category) || elem == null)
+      //     throw new InvalidTypeException(); //Lanza excepción en el caso de no ser una categoría o ser null
+      //   for (const existingCategory of this.#categories) {
+      //     if (existingCategory.name === elem.name) {
+      //       throw new AlreadyExistsException(); //Lanza excepción en el caso de que la categoría ya exista
+      //     }
+      //   }
+      //   this.#categories.push(elem); //Añade la categoría al array
+      //   return this; //Se pueden encadenar llamadas
+      // }
+
+      addCategory(...categories) {
+        for (const category of categories) {
+          if (!(category instanceof Category) || category === null) {
+            //Si lo introducido no es una categoría o es null, salta excepción
+            throw new InvalidTypeException();
+          }
+          //Busca la posición de las categorías añadidas por parámetros
+          const position = this.#getCategoryPosition(category);
+
+          //Si la categoría no se encuentra, se añade en el manager
+          if (position === -1) {
+            this.#categories.push(category);
+          } else {
+            //Si existe alguna categoría con el mismo nombre, salta excepción
+            throw new AlreadyExistsException();
           }
         }
-        this.#categories.push(elem); //Añade la categoría al array
+
         return this; //Se pueden encadenar llamadas
       }
 
       //Método que elimina categorías
-      removeCategory(elem) {
-        const index = this.#categories.findIndex(function (category) {
-          //Se busca a través de un index el elemento deseado
-          return category.name === elem.name;
-        });
+      removeCategory(...categories) {
+        for (const category of categories) {
+          //Busca la posición de las categorías nombradas por parámetros
+          const position = this.#getCategoryPosition(category);
 
-        if (index === -1) {
-          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
-        } else {
-          this.#categories.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+          //Si la categoría no se encuentra, salta excepción, si no, la elimina
+          if (position === -1) {
+            throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+          } else {
+            this.#categories.splice(position, 1); //Se elimina el elemento con el índice deseado del array
+          }
         }
 
         return this; //Se pueden encadenar llamadas
       }
 
       //Adición de menús
-      addMenu(elem) {
-        if (!(elem instanceof Menu) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un menú o ser null
-        for (const existingMenu of this.#menus) {
-          if (existingMenu.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el menú ya exista
+      addMenu(...menus) {
+        for (const menu of menus) {
+          if (!(menu instanceof Menu) || menu == null)
+            throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un menú o ser null
+          //Busca la posición de los menús añadidos por parámetros
+          const position = this.#getMenuPosition(menu);
+
+          //Si el menú no se encuentra, se añade en el manager
+          if (position === -1) {
+            //Se añade tanto el menú como un array vacío de platos donde más adelante se añadirán los platos
+            this.#menus.push({ menu, dishes: [] });
+          } else {
+            //Si existe algun menú con el mismo nombre, salta excepción
+            throw new AlreadyExistsException();
           }
         }
-        this.#menus.push(elem); //Añade el menú al array
         return this; //Se pueden encadenar llamadas
       }
 
       //Eliminación de menús
-      removeMenu(elem) {
-        const index = this.#menus.findIndex(function (menu) {
-          //Se busca a través de un index el elemento deseado
-          return menu.name === elem.name;
-        });
+      removeMenu(...menus) {
+        for (const menu of menus) {
+          const position = this.#getMenuPosition(menu);
 
-        if (index === -1) {
-          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
-        } else {
-          this.#menus.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+          if (position === -1) {
+            throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+          } else {
+            this.#menus.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+          }
         }
-
         return this; //Se pueden encadenar llamadas
       }
 
@@ -445,84 +483,98 @@ const RestaurantsManager = (function () {
         return this; //Se pueden encadenar llamadas
       }
 
-      //Asignar categoría a un plato
-      assignCategoryToDish(category, dish) {
-        if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
+      // //Asignar categoría a un plato
+      // assignCategoryToDish(category, dish) {
+      //   if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
 
-        // const categoryExists = this.#categories.some(function(existingCategory) {
-        //   return existingCategory.name === category.name;
-        // });
+      //   // const categoryExists = this.#categories.some(function(existingCategory) {
+      //   //   return existingCategory.name === category.name;
+      //   // });
 
-        //Verifica si la categoría y el plato existen en el sistema --- arrow functions
-        //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
-        const categoryExists = this.#categories.some(
-          (existingCategory) => existingCategory.name === category.name
-        );
-        //lo mismo con dish
-        const dishExists = this.#dishes.some(
-          (existingDish) => existingDish.name === dish.name
-        );
+      //   //Verifica si la categoría y el plato existen en el sistema --- arrow functions
+      //   //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
+      //   const categoryExists = this.#categories.some(
+      //     (existingCategory) => existingCategory.name === category.name
+      //   );
+      //   //lo mismo con dish
+      //   const dishExists = this.#dishes.some(
+      //     (existingDish) => existingDish.name === dish.name
+      //   );
 
-        //Si la categoría no existe, la agregamos al sistema
-        if (!categoryExists) {
-          this.addCategory(category);
-          console.log("Se ha añadido la nueva categoría al sistema.");
+      //   //Si la categoría no existe, la agregamos al sistema
+      //   if (!categoryExists) {
+      //     this.addCategory(category);
+      //     console.log("Se ha añadido la nueva categoría al sistema.");
+      //   }
+
+      //   //Si el plato no existe, lo agregamos al sistema
+      //   if (!dishExists) {
+      //     this.addDish(dish);
+      //     console.log("Se ha añadido el nuevo plato al sistema.");
+      //   }
+
+      //   //Asignar la categoría al plato
+      //   //Si el plato ya tiene una categoría, se usa ese valor, si no se asigna un array vacío
+      //   dish.categories = dish.categories || [];
+      //   dish.categories.push(category);
+      //   console.log("La categoría ha sido añadida al plato especificado.");
+
+      //   return this; //Se puede encadenar
+      // }
+
+      // //Desasignar un plato de una categoría
+      // deassignCategoryToDish(category, dish) {
+      //   if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
+      //   //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
+      //   const categoryExists = this.#categories.some(
+      //     (existingCategory) => existingCategory.name === category.name
+      //   );
+      //   //lo mismo con dish
+      //   const dishExists = this.#dishes.some(
+      //     (existingDish) => existingDish.name === dish.name
+      //   );
+
+      //   if (!categoryExists || !dishExists) throw new NotExistingException(); //Lanza excepción en el caso de no estar implementada la categoría o plato
+      //   if (categoryExists && dishExists) {
+      //     //Encuentra la categoría a la que se debe desasignar el plato
+      //     const targetCategory = this.#categories.find(
+      //       (existingCategory) => existingCategory.name === category.name
+      //     );
+
+      //     //Verifica si el plato está asignado a la categoría
+      //     if (
+      //       targetCategory &&
+      //       targetCategory.dishes &&
+      //       targetCategory.dishes.includes(dish)
+      //     ) {
+      //       //Elimina el plato de la categoría
+      //       targetCategory.dishes = targetCategory.dishes.filter(
+      //         (existingDish) => existingDish.name !== dish.name
+      //       );
+
+      //       console.log(
+      //         "El plato ha sido desasignado de la categoría indicada."
+      //       );
+      //     } else {
+      //       console.log("El plato no está asignado a la categoría indicada.");
+      //     }
+      //   }
+
+      //   return this;
+      // }
+
+      //TOSTRING - MENU
+      toStringMenu(separator = "\n") {
+        let str = "";
+        for (const menuObj of this.#menus) {
+          const menu = menuObj.menu;
+          str += menu + separator;
+          // for (const dishes of this.getCategoryProducts(category)) {
+          //   // console.log(product.value.toString());
+          //   str += product.toString() + separator;
+          // }
         }
-
-        //Si el plato no existe, lo agregamos al sistema
-        if (!dishExists) {
-          this.addDish(dish);
-          console.log("Se ha añadido el nuevo plato al sistema.");
-        }
-
-        //Asignar la categoría al plato
-        //Si el plato ya tiene una categoría, se usa ese valor, si no se asigna un array vacío
-        dish.categories = dish.categories || [];
-        dish.categories.push(category);
-        console.log("La categoría ha sido añadida al plato especificado.");
-
-        return this; //Se puede encadenar
-      }
-
-      //Desasignar un plato de una categoría
-      deassignCategoryToDish(category, dish) {
-        if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
-        //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
-        const categoryExists = this.#categories.some(
-          (existingCategory) => existingCategory.name === category.name
-        );
-        //lo mismo con dish
-        const dishExists = this.#dishes.some(
-          (existingDish) => existingDish.name === dish.name
-        );
-
-        if (!categoryExists || !dishExists) throw new NotExistingException(); //Lanza excepción en el caso de no estar implementada la categoría o plato
-        if (categoryExists && dishExists) {
-          //Encuentra la categoría a la que se debe desasignar el plato
-          const targetCategory = this.#categories.find(
-            (existingCategory) => existingCategory.name === category.name
-          );
-
-          //Verifica si el plato está asignado a la categoría
-          if (
-            targetCategory &&
-            targetCategory.dishes &&
-            targetCategory.dishes.includes(dish)
-          ) {
-            //Elimina el plato de la categoría
-            targetCategory.dishes = targetCategory.dishes.filter(
-              (existingDish) => existingDish.name !== dish.name
-            );
-
-            console.log(
-              "El plato ha sido desasignado de la categoría indicada."
-            );
-          } else {
-            console.log("El plato no está asignado a la categoría indicada.");
-          }
-        }
-
-        return this;
+        return str;
       }
     }
 

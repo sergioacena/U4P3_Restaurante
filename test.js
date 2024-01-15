@@ -47,7 +47,7 @@ const restaurant3 = new Restaurant("Burger King", "cccccc", coor2);
 
 console.log("----ADD CATEGORY----");
 //Se añaden las dos categorías al manager, pudiendo encadenarse
-manager.addCategory(category1).addCategory(category2);
+manager.addCategory(category1, category2);
 
 try {
   manager.addCategory(category2); //Salta AlreadyExistsException
@@ -85,7 +85,7 @@ for (const category of categoriesIterator2) {
 }
 
 console.log("----ADD MENU----");
-manager.addMenu(menu1).addMenu(menu2);
+manager.addMenu(menu1, menu2);
 
 try {
   manager.addMenu(menu2); //Salta AlreadyExistsException
@@ -100,11 +100,14 @@ try {
 }
 
 //Obtenemos el iterador de los menús
-const menuIterator1 = manager.getMenu();
+// const menuIterator1 = manager.getMenu();
 
-for (const menu of menuIterator1) {
-  console.log(menu.toString());
-}
+// for (const menu of menuIterator1) {
+//   console.log(menu.toString());
+// }
+
+//Esto muestra bien los menús
+console.log(manager.toStringMenu());
 
 console.log("----REMOVE MENU----");
 const menuIterator2 = manager.getMenu();
