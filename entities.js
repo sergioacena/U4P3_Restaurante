@@ -16,17 +16,19 @@ import {
 
 //LISTADO OBJETOS --
 
-//1.Objeto Dish
+//1.Objeto Dish -- no lo pide pero he puesto categorías y alérgenos dentro para testear
 class Dish {
   #name;
   #description;
   #ingredients;
   #image;
+  #categories;
   constructor(name, description = "", ingredients = [], image = "") {
     this.#name = name;
     this.#description = description;
     this.#ingredients = ingredients;
     this.#image = image;
+    this.#categories = [];
   }
 
   get name() {
@@ -61,10 +63,24 @@ class Dish {
     this.#image = newImage;
   }
 
+  get categories() {
+    return this.#categories;
+  }
+
+  set categories(newCategories) {
+    this.#categories = newCategories;
+  }
+
+  //He modificado el toString para que me muestre las categorías para testeo (alérgenos aún no)
   toString() {
-    return `Dish: ${this.#name}, Description: ${
-      this.#description
-    }, Ingredients: ${this.#ingredients.join(", ")}, Image: ${this.#image}`;
+    let categoriesString = this.categories
+      .map((category) => category.name)
+      .join(", ");
+    return `Dish: ${this.name}, Description: ${
+      this.description
+    }, Ingredients: ${this.ingredients.join(
+      ", "
+    )}, Categories: ${categoriesString}, Image: ${this.image}`;
   }
 }
 
@@ -548,43 +564,97 @@ const RestaurantsManager = (function () {
       }
 
       // //Asignar categoría a un plato
+
       // assignCategoryToDish(category, dish) {
       //   if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
 
-      //   // const categoryExists = this.#categories.some(function(existingCategory) {
-      //   //   return existingCategory.name === category.name;
-      //   // });
-
-      //   //Verifica si la categoría y el plato existen en el sistema --- arrow functions
-      //   //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
+      //   // Verificar si la categoría ya está registrada en el manager
       //   const categoryExists = this.#categories.some(
       //     (existingCategory) => existingCategory.name === category.name
       //   );
-      //   //lo mismo con dish
-      //   const dishExists = this.#dishes.some(
-      //     (existingDish) => existingDish.name === dish.name
-      //   );
 
-      //   //Si la categoría no existe, la agregamos al sistema
       //   if (!categoryExists) {
       //     this.addCategory(category);
-      //     console.log("Se ha añadido la nueva categoría al sistema.");
+      //     console.log(
+      //       "La categoría no existía en la colección, por lo que se ha añadido."
+      //     );
       //   }
 
-      //   //Si el plato no existe, lo agregamos al sistema
+      //   // Verificar si el plato ya está registrado en el manager
+      //   const dishExists = this.#dishes.some(
+      //     (existingDish) => existingDish.dish.name === dish.name
+      //   );
+
+      //   // Si el plato no existe, lo añade
       //   if (!dishExists) {
       //     this.addDish(dish);
-      //     console.log("Se ha añadido el nuevo plato al sistema.");
+      //     console.log(
+      //       "El plato no existía en la colección, por lo que se ha añadido."
+      //     );
       //   }
 
-      //   //Asignar la categoría al plato
-      //   //Si el plato ya tiene una categoría, se usa ese valor, si no se asigna un array vacío
-      //   dish.categories = dish.categories || [];
-      //   dish.categories.push(category);
-      //   console.log("La categoría ha sido añadida al plato especificado.");
+      //   // Obtener el plato correspondiente del array de platos
+      //   const targetDish = this.#dishes.find(
+      //     (existingDish) => existingDish.dish.name === dish.name
+      //   );
+
+      //   if (targetDish) {
+      //     // Asignar la categoría al plato
+      //     // Si el plato ya tiene una categoría, se usa ese valor, si no se asigna un array vacío
+      //     targetDish.dish.categories = targetDish.dish.categories || [];
+      //     targetDish.dish.categories.push(category);
+      //     console.log("La categoría ha sido añadida al plato especificado.");
+      //   } else {
+      //     console.log("El plato ya contiene esta categoría.");
+      //   }
 
       //   return this; //Se puede encadenar
       // }
+      assignCategoryToDish(category, dish) {
+        if (category == null || dish == null) throw new NullException(); // Lanza excepción en caso de ser null
+
+        // Verificar si la categoría ya está registrada en el manager
+        const categoryExists = this.#categories.some(
+          (existingCategory) => existingCategory.name === category.name
+        );
+
+        if (!categoryExists) {
+          this.addCategory(category);
+          console.log(
+            "La categoría no existía en la colección, por lo que se ha añadido."
+          );
+        }
+
+        // Verificar si el plato ya está registrado en el manager
+        let targetDishIndex = this.#dishes.findIndex(
+          (existingDishObj) => existingDishObj.dish.name === dish.name
+        );
+
+        // Si el plato no existe, lo añade
+        if (targetDishIndex === -1) {
+          this.addDish(dish);
+          console.log(
+            "El plato no existía en la colección, por lo que se ha añadido."
+          );
+          // Actualizar el índice del plato después de añadirlo
+          targetDishIndex = this.#dishes.findIndex(
+            (existingDishObj) => existingDishObj.dish.name === dish.name
+          );
+        }
+
+        // Obtener el plato correspondiente del array de platos
+        const targetDishObj = this.#dishes[targetDishIndex];
+
+        // Verificar si la categoría ya ha sido asignada al plato
+        if (!targetDishObj.dish.categories.includes(category)) {
+          targetDishObj.dish.categories.push(category); //Se usa la propiedad 'categories' del objeto Dish
+          console.log("La categoría ha sido añadida al plato especificado.");
+        } else {
+          console.log("El plato ya contiene esta categoría.");
+        }
+
+        return this; // Se puede encadenar
+      }
 
       // //Desasignar un plato de una categoría
       // deassignCategoryToDish(category, dish) {
@@ -666,7 +736,7 @@ const RestaurantsManager = (function () {
         let str = "";
         for (const dishObj of this.#dishes) {
           const dishes = dishObj.dish;
-          str += dishes + separator;
+          str += dishes + separator; // Aquí se usa el método toString() de Dish directamente
         }
         return str;
       }

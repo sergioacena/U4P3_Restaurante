@@ -13,8 +13,8 @@ import {
 const manager = RestaurantsManager.getInstance();
 
 const dish1 = new Dish(
-  "Pasta",
-  "plato de pasta",
+  "Espaguetis",
+  "plato de espaguetis",
   ["pasta", "tomate frito", "queso"],
   "pasta_image.jpg"
 );
@@ -26,9 +26,12 @@ const dish6 = new Dish(
   "entrecot_image.jpg"
 );
 
+const dish3 = new Dish("Pimiento", "Rojo", ["Pimiento"], "pimiento.jpg");
+
 const category1 = new Category("Legumbres", "aaaaaaaa");
 const category2 = new Category("Pasta", "bbbbbbb");
-const category6 = new Category("Salsa", "jjjjj");
+const category6 = new Category("Pimiento", "jjjjj");
+const category3 = new Category("Carne", "jjjjj");
 
 const menu1 = new Menu("Diario", "aaaaaa");
 const menu2 = new Menu("Vegano", "bbbbbb");
@@ -190,7 +193,7 @@ console.log(manager.toStringDish());
 
 console.log("----REMOVE DISHES----");
 // const dishIterator2 = manager.getDish();
-manager.removeDish(dish1); //Se elimina el elemento de la categoría sin problema
+manager.removeDish(dish2); //Se elimina el elemento de la categoría sin problema
 
 try {
   manager.removeDish(dish6); //Salta NotRegisteredElement, no se elimina nada
@@ -245,23 +248,43 @@ try {
 console.log(manager.toStringRestaurant());
 
 console.log("----ASSIGN CATEGORY TO DISH----");
-// try {
-//   manager.assignCategoryToDish(category2); //Salta NullException
-// } catch (error) {
-//   console.log(error);
-// }
+try {
+  manager.assignCategoryToDish(category2); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
 
-// try {
-//   manager.assignCategoryToDish(dish2); //Salta NullException de nuevo
-// } catch (error) {
-//   console.log(error);
-// }
+try {
+  manager.assignCategoryToDish(dish2); //Salta NullException de nuevo
+} catch (error) {
+  console.log(error);
+}
 
-// try {
-//   manager.assignCategoryToDish(category2, dish2); //Se añade la categoría correctamente al plato 2
-// } catch (error) {
-//   console.log(error);
-// }
+try {
+  manager.assignCategoryToDish(category2, dish1); //Se añade la categoría correctamente al plato 1
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignCategoryToDish(category3, dish1); //Se añade una categoría que no existía al plato1
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignCategoryToDish(category3, dish3); //Se añade una categoría a un plato que no existía en el sistema
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignCategoryToDish(category3, dish3); //No deja añadir la categoría ya que se añadió previamente
+} catch (error) {
+  console.log(error);
+}
+
+console.log(manager.toStringDish()); //Se muestran las categorías correctamente dentro de los platos
 
 // console.log("----DEASSIGN CATEGORY TO DISH----");
 // try {
