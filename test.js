@@ -9,25 +9,33 @@ import {
   RestaurantsManager,
 } from "./entities.js";
 
-//Creación objetos
+//Creación objetos - uso los métodos de create
 const manager = RestaurantsManager.getInstance();
+const manager2 = RestaurantsManager.getInstance();
+console.log(manager == manager2);
+//Comprobación para mostrar que solo hay una instancia de manager
 
-const dish1 = new Dish(
+const dish1 = manager.createDish(
   "Espaguetis",
   "plato de espaguetis",
   ["pasta", "tomate frito", "queso"],
   "pasta_image.jpg"
 );
-const dish2 = new Dish("Hamburguesa", "", [], "");
-const dish6 = new Dish(
+const dish2 = manager.createDish("Hamburguesa", "", [], "");
+const dish6 = manager.createDish(
   "Entrecot",
   "Al punto",
   ["Carne de vaca", "sal", "pimienta"],
   "entrecot_image.jpg"
 );
 
-const dish3 = new Dish("Pimiento", "Rojo", ["Pimiento"], "pimiento.jpg");
-const dish4 = new Dish(
+const dish3 = manager.createDish(
+  "Pimiento",
+  "Rojo",
+  ["Pimiento"],
+  "pimiento.jpg"
+);
+const dish4 = manager.createDish(
   "Menestra",
   "Verduras varias",
   ["Brocoli, Berenjena"],
@@ -261,6 +269,12 @@ try {
 }
 
 try {
+  manager.assignCategoryToDish(dish4, category3); //Se añade otra categoría para otro plato
+} catch (error) {
+  console.log(error);
+}
+
+try {
   manager.assignCategoryToDish(dish3, category3); //Se añade una categoría a un plato que no existía en el sistema
 } catch (error) {
   console.log(error);
@@ -307,6 +321,12 @@ try {
 }
 try {
   manager.assignAllergenToDish(dish3, allergen1); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignAllergenToDish(dish1, allergen1); //Se asigna correctamente
 } catch (error) {
   console.log(error);
 }
@@ -366,8 +386,8 @@ try {
   console.log(error);
 }
 
+console.log("----DENTRO -- CAMBIAR POSICIONES EN MENÚ----");
 //PRUEBO AQUI EL CAMBIAR POSICIONES DE LOS PLATOS EN UN MENÚ
-//Ya que aquí puedo ver todavía el dish1 que aparece bien y no undefined
 try {
   manager.changeDishesPositionsInMenu(menu1, dish1, dish4); //El dish uno pasa de la posición 0 a la posición 2 correctamente
 } catch (error) {
@@ -376,6 +396,7 @@ try {
 
 const menuIterator3 = manager.getterMenus();
 //No se por que puedo ver desde el navegador el primer plato del menú, pero el segundo sale undefined???
+//RECORDAR QUE ESO ERA PORQUE AUN NO HABIA CREADO LOS OBJETOS CON CREATE!!!
 for (const menu of menuIterator3) {
   console.log(menu);
 }
@@ -396,6 +417,29 @@ try {
 
 const menuIterator4 = manager.getterMenus();
 //Solo queda 1 plato por menú, el problema es que sigue saliendo undefined...
+//RECORDAR QUE ESO ERA PORQUE AUN NO HABIA CREADO LOS OBJETOS CON CREATE!!!
 for (const menu of menuIterator4) {
   console.log(menu);
+}
+
+console.log("----GET DISHES IN CATEGORY----");
+
+//Comparación por nombre
+function ordenAlfabetico(dishA, dishB) {
+  return dishA.name.localeCompare(dishB.name);
+}
+
+//Se visualizan los platos de la categoría 3, ordenados por orden alfabético
+let dishesIterator = manager.getDishesInCategory(category3, ordenAlfabetico);
+for (let dish of dishesIterator) {
+  console.log(`${dish.name}: ${dish.description}`);
+}
+
+console.log("----GET DISHES WITH ALLERGEN----");
+
+//Utilizo el mismo orden alfabético que en el testeo anterior
+//Se ordenan también correctamente los platos por orden alfabético
+let dishesIterator2 = manager.getDishesWithAllergen(allergen1, ordenAlfabetico);
+for (let dish of dishesIterator2) {
+  console.log(`${dish.name}: ${dish.description}`);
 }

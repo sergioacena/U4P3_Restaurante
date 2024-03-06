@@ -687,11 +687,105 @@ const RestaurantsManager = (function () {
           throw new NotRegisteredElementException(); //Si algún plato no está registrado en el menú, salta excepción
         }
 
+        //cambiamos la posición del dish1 por la del 2 y viceversa
         const dishesArray = this.#menus[positionM].dishes;
         [dishesArray[positionD1], dishesArray[positionD2]] = [
           dishesArray[positionD2],
           dishesArray[positionD1],
         ];
+      }
+
+      getDishesInCategory(category, funcion) {
+        if (!(category instanceof Category) || category == null) {
+          //Si la categoría es null salta excepción
+          throw new NullException();
+        }
+
+        const positionC = this.#getCategoryPosition(category);
+
+        if (positionC === -1) {
+          //Si la categoría no está registrada salta excepción
+          throw new NotRegisteredElementException();
+        }
+
+        //Inicializo un array para meter luego los platos filtrados dentro
+        let filteredDishes = [];
+
+        //Filtro los platos en la categoría
+        for (const dishObj of this.#dishes) {
+          if (dishObj.categories.includes(category)) {
+            filteredDishes.push(dishObj.dish);
+          }
+        }
+
+        //Aquí filtro los platos en el caso de que me den una función para ello
+        if (funcion && typeof funcion === "function") {
+          filteredDishes.sort(funcion);
+        }
+
+        //Se devuelven los platos de la categoría
+        function* dishesInCategory() {
+          for (const dish of filteredDishes) {
+            yield dish;
+          }
+        }
+
+        return dishesInCategory();
+      }
+
+      getDishesWithAllergen(allergen, funcion) {
+        if (!(allergen instanceof Allergen) || allergen == null) {
+          //Si el alérgeno es null salta excepción
+          throw new NullException();
+        }
+
+        const positionA = this.#getAllergenPosition(allergen);
+
+        if (positionA === -1) {
+          //Si el alérgeno no está registrado salta excepción
+          throw new NotRegisteredElementException();
+        }
+
+        //Inicializo un array para meter luego los platos filtrados dentro
+        let filteredDishes = [];
+
+        //Filtro los platos con los alérgenos
+        for (const dishObj of this.#dishes) {
+          if (dishObj.allergens.includes(allergen)) {
+            filteredDishes.push(dishObj.dish);
+          }
+        }
+
+        //Aquí filtro los platos en el caso de que me den una función para ello
+        if (funcion && typeof funcion === "function") {
+          filteredDishes.sort(funcion);
+        }
+
+        //Se devuelven los platos con los alérgenos
+        function* dishesWithAllergen() {
+          for (const dish of filteredDishes) {
+            yield dish;
+          }
+        }
+
+        return dishesWithAllergen();
+      }
+
+      //No se hacerlo / no entiendo bien el pdf a que se refiere con dish + dos funciones
+      findDishes(dish, funcion1, funcion2) {}
+
+      //Creación de objetos
+      createDish(name, description, ingredients, image) {
+        for (const dish of this.#dishes) {
+          if (dish.dish.name === name) {
+            // Return the found dish if the name matches
+            return dish.dish;
+          }
+        }
+
+        // Create and return a new Dish if none was found with the matching name
+        const newDish = new Dish(name, description, ingredients, image);
+        return newDish;
       }
 
       //ESTOS TOSTRING LOS HICE POR PROBAR PERO NO ERAN NECESARIOS PARA TESTEOS
