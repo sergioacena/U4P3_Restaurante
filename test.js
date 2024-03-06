@@ -64,20 +64,15 @@ try {
   console.log(error);
 }
 
-// //Obtenemos el iterador de las categorías
-// const categoriesIterator1 = manager.getCategories();
-
-// //Se recorren las categorías usando el iterador y se muestran en un toString
-// for (const category of categoriesIterator1) {
-//   console.log(category.toString());
-// }
-
-console.log(manager.toStringCategory());
+//PARA MOSTRAR LOS DATOS ANTES Y DESPUES CREO DISTINTOS ITERADORES, SI NO NO PUEDO
+//Obtenemos el iterador de las categorías
+const categoriesIterator1 = manager.getterCategories();
+for (const categories of categoriesIterator1) {
+  console.log(categories.toString());
+}
 
 console.log("----REMOVE CATEGORY----");
-//AVISO -- hay que crear un iterador por cada vez que se quiera hacer toString u otra operación
-//AVISO2 -- no es necesario, he encontrado otra forma (no se si mas limpia) de hacer los toString
-// const categoriesIterator2 = manager.getCategories();
+const categoriesIterator2 = manager.getterCategories();
 manager.removeCategory(category1); //Se elimina el elemento de la categoría sin problema
 
 try {
@@ -86,11 +81,9 @@ try {
   console.log(error);
 }
 
-console.log(manager.toStringCategory());
-
-// for (const category of categoriesIterator2) {
-//   console.log(category.toString()); //Muestra todas las categorías
-// }
+for (const category of categoriesIterator2) {
+  console.log(category.toString()); //Muestra todas las categorías
+}
 
 console.log("----ADD MENU----");
 manager.addMenu(menu1, menu2);
@@ -108,16 +101,14 @@ try {
 }
 
 //Obtenemos el iterador de los menús
-// const menuIterator1 = manager.getMenu();
+let menuIterator1 = manager.getterMenus();
 
-// for (const menu of menuIterator1) {
-//   console.log(menu.toString());
-// }
-
-//Esto muestra bien los menús
-console.log(manager.toStringMenu());
+for (const menu of menuIterator1) {
+  console.log(menu);
+}
 
 console.log("----REMOVE MENU----");
+const menuIterator2 = manager.getterMenus();
 manager.removeMenu(menu1); //Se elimina el elemento del menú sin problema
 
 try {
@@ -126,7 +117,9 @@ try {
   console.log(error);
 }
 
-console.log(manager.toStringMenu());
+for (const menu of menuIterator2) {
+  console.log(menu);
+}
 
 console.log("----ADD ALLERGEN----");
 manager.addAllergen(allergen1).addAllergen(allergen2);
@@ -143,17 +136,15 @@ try {
   console.log(error);
 }
 
-// //Obtenemos el iterador de los alérgenos
-// const allergenIterator1 = manager.getAllergen();
+//Obtenemos el iterador de los alérgenos
+const allergenIterator1 = manager.getterAllergens();
 
-// for (const allergen of allergenIterator1) {
-//   console.log(allergen.toString());
-// }
-
-console.log(manager.toStringAllergen());
+for (const allergen of allergenIterator1) {
+  console.log(allergen.toString());
+}
 
 console.log("----REMOVE ALLERGEN----");
-// const allergenIterator2 = manager.getAllergen();
+const allergenIterator2 = manager.getterAllergens();
 manager.removeAllergen(allergen1); //Se elimina el elemento de los alérgenos sin problema
 
 try {
@@ -162,10 +153,9 @@ try {
   console.log(error);
 }
 
-// for (const allergen of allergenIterator2) {
-//   console.log(allergen.toString()); //Muestra todos los alérgenos
-// }
-console.log(manager.toStringAllergen());
+for (const allergen of allergenIterator2) {
+  console.log(allergen.toString()); //Muestra todos los alérgenos
+}
 
 console.log("----ADD DISHES----");
 manager.addDish(dish1).addDish(dish2);
@@ -182,17 +172,15 @@ try {
   console.log(error);
 }
 
-//Obtenemos el iterador de los platos???????????? - no hay iterador en la practica (lo hago para probarlo - no sirve al final)
-// const dishIterator1 = manager.getDish();
+//Obtenemos el iterador de los platos - no hay iterador en la practica (lo hago para probarlo)
+const dishIterator1 = manager.getterDishes();
 
-// for (const dish of dishIterator1) {
-//   console.log(dish.toString());
-// }
-
-console.log(manager.toStringDish());
+for (const dish of dishIterator1) {
+  console.log(dish);
+}
 
 console.log("----REMOVE DISHES----");
-// const dishIterator2 = manager.getDish();
+const dishIterator2 = manager.getterDishes();
 manager.removeDish(dish2); //Se elimina el elemento de la categoría sin problema
 
 try {
@@ -201,11 +189,9 @@ try {
   console.log(error);
 }
 
-// for (const dish of dishIterator2) {
-//   console.log(dish.toString()); //Muestra todos los platos
-// }
-
-console.log(manager.toStringDish());
+for (const dish of dishIterator2) {
+  console.log(dish); //Muestra todos los platos
+}
 
 console.log("----ADD RESTAURANT----");
 manager.addRestaurant(restaurant1).addRestaurant(restaurant2);
@@ -222,17 +208,15 @@ try {
   console.log(error);
 }
 
-console.log(manager.toStringRestaurant());
+//Obtenemos el iterador de los restaurantes
+const restaurantIterator1 = manager.getterRestaurants();
 
-// //Obtenemos el iterador de los restaurantes
-// const restaurantIterator1 = manager.getRestaurants();
-
-// for (const restaurant of restaurantIterator1) {
-//   console.log(restaurant.toString());
-// }
+for (const restaurant of restaurantIterator1) {
+  console.log(restaurant.toString());
+}
 
 console.log("----REMOVE RESTAURANT----");
-// const restaurantIterator2 = manager.getRestaurants();
+const restaurantIterator2 = manager.getterRestaurants();
 manager.removeRestaurant(restaurant1); //Se elimina el elemento de la categoría sin problema
 
 try {
@@ -241,11 +225,9 @@ try {
   console.log(error);
 }
 
-// for (const restaurant of restaurantIterator2) {
-//   console.log(restaurant.toString()); //Muestra todos los restaurantes
-// }
-
-console.log(manager.toStringRestaurant());
+for (const restaurant of restaurantIterator2) {
+  console.log(restaurant.toString()); //Muestra todos los restaurantes
+}
 
 console.log("----ASSIGN CATEGORY TO DISH----");
 try {
@@ -261,30 +243,34 @@ try {
 }
 
 try {
-  manager.assignCategoryToDish(category2, dish1); //Se añade la categoría correctamente al plato 1
+  manager.assignCategoryToDish(dish1, category2); //Se añade la categoría correctamente al plato 1
 } catch (error) {
   console.log(error);
 }
 
 try {
-  manager.assignCategoryToDish(category3, dish1); //Se añade una categoría que no existía al plato1
+  manager.assignCategoryToDish(dish1, category3); //Se añade una categoría que no existía al plato1
 } catch (error) {
   console.log(error);
 }
 
 try {
-  manager.assignCategoryToDish(category3, dish3); //Se añade una categoría a un plato que no existía en el sistema
+  manager.assignCategoryToDish(dish3, category3); //Se añade una categoría a un plato que no existía en el sistema
 } catch (error) {
   console.log(error);
 }
 
 try {
-  manager.assignCategoryToDish(category3, dish3); //No deja añadir la categoría ya que se añadió previamente
+  manager.assignCategoryToDish(dish3, category3); //No deja añadir la categoría ya que se añadió previamente
 } catch (error) {
   console.log(error);
 }
 
-console.log(manager.toStringDish()); //Se muestran las categorías correctamente dentro de los platos
+const dishIterator3 = manager.getterDishes();
+
+for (const dish of dishIterator3) {
+  console.log(dish);
+} //Se muestran las categorías correctamente dentro de los platos
 
 // console.log("----DEASSIGN CATEGORY TO DISH----");
 // try {

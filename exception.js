@@ -8,7 +8,17 @@ class BaseException extends Error {
   }
 }
 
-//EXCEPCIONES PROVISIONALES
+class InvalidAccessConstructorException extends BaseException {
+  constructor(fileName, lineNumber) {
+    super(
+      "El constructor no puede ser llamado como una función.",
+      fileName,
+      lineNumber
+    );
+    this.name = "InvalidAccessConstructorException";
+  }
+}
+
 class AbstractClassException extends BaseException {
   constructor(fileName, lineNumber) {
     super("La clase no puede ser abstracta", fileName, lineNumber);
@@ -87,6 +97,7 @@ class InvalidLongitudeException extends BaseException {
 //Exportación de excepciones
 export {
   AbstractClassException,
+  InvalidAccessConstructorException,
   EmptyValueException,
   AlreadyExistsException,
   NotExistingException,
