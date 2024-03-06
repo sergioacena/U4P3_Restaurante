@@ -510,6 +510,7 @@ const RestaurantsManager = (function () {
         return this;
       }
 
+      //Asignar categoría a un plato
       assignCategoryToDish(dish, ...categories) {
         if (dish == null) throw new NullException(); //Si el plato es null salta excepción
 
@@ -518,6 +519,7 @@ const RestaurantsManager = (function () {
         if (positionD === -1) {
           this.addDish(dish); //Si el plato no existe, hay que crearlo
           positionD = this.#getDishPosition(dish);
+          console.log("Se ha creado un plato que no existía.");
         }
 
         for (const category of categories) {
@@ -526,6 +528,7 @@ const RestaurantsManager = (function () {
           let positionC = this.#getCategoryPosition(category);
           if (positionC === -1) {
             this.addCategory(category); //Si la categoría no existe, hay que crearla
+            console.log("Se ha creado una categoría que no existía.");
           }
 
           //Se asigna la categoría al plato según su posición
@@ -535,46 +538,130 @@ const RestaurantsManager = (function () {
         return this;
       }
 
-      // //Desasignar un plato de una categoría
-      // deassignCategoryToDish(category, dish) {
-      //   if (category == null || dish == null) throw new NullException(); //Lanza excepción en el caso de ser null
-      //   //Si se encuentra una categoría con el mismo nombre que la introducida por parámetro, categoryExists será true
-      //   const categoryExists = this.#categories.some(
-      //     (existingCategory) => existingCategory.name === category.name
-      //   );
-      //   //lo mismo con dish
-      //   const dishExists = this.#dishes.some(
-      //     (existingDish) => existingDish.name === dish.name
-      //   );
+      //Desasignar una categoría de un plato
+      deassignCategoryToDish(dish, ...categories) {
+        if (!(dish instanceof Dish) || dish == null) throw new NullException(); //Si el plato es null salta excepción
 
-      //   if (!categoryExists || !dishExists) throw new NotExistingException(); //Lanza excepción en el caso de no estar implementada la categoría o plato
-      //   if (categoryExists && dishExists) {
-      //     //Encuentra la categoría a la que se debe desasignar el plato
-      //     const targetCategory = this.#categories.find(
-      //       (existingCategory) => existingCategory.name === category.name
-      //     );
+        let positionD = this.#getDishPosition(dish);
+        if (positionD === -1) {
+          throw new NotRegisteredElementException(); //Si no existe el plato, salta excepción
+        }
 
-      //     //Verifica si el plato está asignado a la categoría
-      //     if (
-      //       targetCategory &&
-      //       targetCategory.dishes &&
-      //       targetCategory.dishes.includes(dish)
-      //     ) {
-      //       //Elimina el plato de la categoría
-      //       targetCategory.dishes = targetCategory.dishes.filter(
-      //         (existingDish) => existingDish.name !== dish.name
-      //       );
+        for (const category of categories) {
+          if (!(category instanceof Category) || category == null)
+            throw new NullException(); //Si la categoría es null salta excepción
 
-      //       console.log(
-      //         "El plato ha sido desasignado de la categoría indicada."
-      //       );
-      //     } else {
-      //       console.log("El plato no está asignado a la categoría indicada.");
-      //     }
-      //   }
+          let positionC = this.#getCategoryPosition(category);
+          if (positionC === -1) {
+            throw new NotRegisteredElementException(); //Si no existe la categoría, salta excepción
+          }
 
-      //   return this;
-      // }
+          //Se asigna la categoría al plato según su posición
+          this.#dishes[positionD].categories.splice(positionC, 1);
+        }
+
+        return this;
+      }
+
+      //Asignación de alérgeno a un plato
+      assignAllergenToDish(dish, ...allergens) {
+        if (dish == null) throw new NullException(); //Si el plato es null salta excepción
+
+        let positionD = this.#getDishPosition(dish);
+
+        if (positionD === -1) {
+          this.addDish(dish); //Si el plato no existe, hay que crearlo
+          positionD = this.#getDishPosition(dish);
+        }
+
+        for (const allergen of allergens) {
+          if (allergen == null) throw new NullException(); //Si el alérgeno es null salta excepción
+
+          let positionA = this.#getAllergenPosition(allergen);
+          if (positionA === -1) {
+            this.addAllergen(allergen); //Si el alérgeno no existe, hay que crearlo
+          }
+
+          //Se asigna el alérgeno al plato según su posición
+          this.#dishes[positionD].allergens.push(allergen);
+        }
+
+        return this;
+      }
+      //Desasignar un alérgeno de un plato
+      deassignAllergenToDish(dish, ...allergens) {
+        if (!(dish instanceof Dish) || dish == null) throw new NullException(); //Si el plato es null salta excepción
+
+        let positionD = this.#getDishPosition(dish);
+        if (positionD === -1) {
+          throw new NotRegisteredElementException(); //Si no existe el plato, salta excepción
+        }
+
+        for (const allergen of allergens) {
+          if (!(allergen instanceof Allergen) || allergen == null)
+            throw new NullException(); //Si el alérgeno es null salta excepción
+
+          let positionA = this.#getAllergenPosition(allergen);
+          if (positionA === -1) {
+            throw new NotRegisteredElementException(); //Si no existe el alérgeno, salta excepción
+          }
+
+          //Se desasigna el alérgeno del plato
+          this.#dishes[positionD].allergens.splice(positionA, 1);
+        }
+
+        return this;
+      }
+      //Asignar un plato a un menú
+      assignDishToMenu(menu, ...dishes) {
+        if (menu == null) throw new NullException(); //Si el menu es null salta excepción
+
+        let positionM = this.#getMenuPosition(menu);
+
+        if (positionM === -1) {
+          this.addMenu(menu); //Si el menu no existe, hay que crearlo
+          positionM = this.#getMenuPosition(menu);
+        }
+
+        for (const dish of dishes) {
+          if (dish == null) throw new NullException(); //Si el plato es null salta excepción
+
+          let positionD = this.#getDishPosition(dish);
+          if (positionD === -1) {
+            this.addDish(dish); //Si el plato no existe, hay que crearlo
+          }
+
+          //Se asigna el plato al menú según su posición
+          this.#menus[positionM].dishes.push(this.#dishes[positionD]);
+        }
+
+        return this;
+      }
+
+      //Desasignar un plato de un menú
+      deassignDishToMenu(menu, ...dishes) {
+        if (!(menu instanceof Menu) || menu == null) throw new NullException(); //Si el menu es null salta excepción
+
+        let positionM = this.#getMenuPosition(menu);
+        if (positionM === -1) {
+          throw new NotRegisteredElementException(); //Si no existe el menu, salta excepción
+        }
+
+        for (const dish of dishes) {
+          if (!(dish instanceof Dish) || dish == null)
+            throw new NullException(); //Si el plato es null salta excepción
+
+          let positionD = this.#getDishPosition(dish);
+          if (positionD === -1) {
+            throw new NotRegisteredElementException(); //Si no existe el plato, salta excepción
+          }
+
+          //Se desasigna el plato del menú
+          this.#menus[positionM].dishes.splice(positionD, 1);
+        }
+
+        return this;
+      }
 
       //ESTOS TOSTRING LOS HICE POR PROBAR PERO NO ERAN NECESARIOS PARA TESTEOS
       //TOSTRING - CATEGORIES

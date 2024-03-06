@@ -236,11 +236,11 @@ try {
   console.log(error);
 }
 
-try {
-  manager.assignCategoryToDish(dish2); //Salta NullException de nuevo
-} catch (error) {
-  console.log(error);
-}
+// try {
+//   manager.assignCategoryToDish(dish2, null); //salta null (comentado por no añadir mas platos)
+// } catch (error) {
+//   console.log(error);
+// }
 
 try {
   manager.assignCategoryToDish(dish1, category2); //Se añade la categoría correctamente al plato 1
@@ -260,33 +260,122 @@ try {
   console.log(error);
 }
 
-try {
-  manager.assignCategoryToDish(dish3, category3); //No deja añadir la categoría ya que se añadió previamente
-} catch (error) {
-  console.log(error);
-}
-
 const dishIterator3 = manager.getterDishes();
 
 for (const dish of dishIterator3) {
   console.log(dish);
 } //Se muestran las categorías correctamente dentro de los platos
+//!!!AL DESASIGNAR UNA CATEGORÍA SE PIERDE EL DATO TAMBIÉN AQUÍ PERO ANTES DE DESASIGNAR FUNCIONABA
 
-// console.log("----DEASSIGN CATEGORY TO DISH----");
-// try {
-//   manager.deassignCategoryToDish(category2); //Salta NullException
-// } catch (error) {
-//   console.log(error);
-// }
+console.log("----DEASSIGN CATEGORY TO DISH----");
+try {
+  manager.deassignCategoryToDish(category2); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
 
-// try {
-//   manager.deassignCategoryToDish(category2, dish1); //Salta NullException de nuevo
-// } catch (error) {
-//   console.log(error);
-// }
+try {
+  manager.deassignCategoryToDish(dish1, category3); //Se desasigna correctamente
+} catch (error) {
+  console.log(error);
+}
 
-// try {
-//   manager.deassignCategoryToDish(category2, dish2); //NO SE DESASIGNA CORRECTAMENTE
-// } catch (error) {
-//   console.log(error);
-// }
+const dishIterator4 = manager.getterDishes();
+
+for (const dish of dishIterator4) {
+  //SALE QUE EL ARRAY TIENE 1
+  console.log(dish);
+}
+
+console.log("----ASSIGN ALLERGEN TO DISH----");
+try {
+  manager.assignAllergenToDish(null, allergen1); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignAllergenToDish(dish3, allergen2); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
+try {
+  manager.assignAllergenToDish(dish3, allergen1); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
+
+const dishIterator5 = manager.getterDishes();
+
+for (const dish of dishIterator5) {
+  console.log(dish);
+}
+
+console.log("----DEASSIGN ALLERGEN TO DISH----");
+
+try {
+  manager.deassignAllergenToDish(null, allergen1); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.deassignAllergenToDish(dish3, allergen2); //Se desasigna correctamente
+} catch (error) {
+  console.log(error);
+}
+
+const dishIterator6 = manager.getterDishes();
+
+for (const dish of dishIterator6) {
+  console.log(dish);
+}
+
+console.log("----ASSIGN DISH TO MENU----");
+try {
+  manager.assignDishToMenu(null, dish2); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.assignDishToMenu(menu1, dish1); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
+try {
+  manager.assignDishToMenu(menu1, dish6); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
+try {
+  manager.assignDishToMenu(menu2, dish3); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
+
+const menuIterator3 = manager.getterMenus();
+//No se por que puedo ver desde el navegador el primer plato del menú, pero el segundo sale undefined???
+for (const menu of menuIterator3) {
+  console.log(menu);
+}
+
+console.log("----DEASSIGN DISH TO MENU----");
+
+try {
+  manager.deassignDishToMenu(null, dish2); //Salta NullException
+} catch (error) {
+  console.log(error);
+}
+
+try {
+  manager.deassignDishToMenu(menu1, dish1); //Se desasigna correctamente
+} catch (error) {
+  console.log(error);
+}
+
+const menuIterator4 = manager.getterMenus();
+//Solo queda 1 plato por menú, el problema es que sigue saliendo undefined...
+for (const menu of menuIterator4) {
+  console.log(menu);
+}
