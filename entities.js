@@ -310,6 +310,21 @@ const RestaurantsManager = (function () {
         return this.#menus.findIndex((x) => x.menu.name === menu.name);
       }
 
+      //Cogemos la posicion del plato en el array
+      #getDishPosition(dish) {
+        return this.#dishes.findIndex((x) => x.dish.name === dish.name);
+      }
+
+      //Cogemos la posicion del alérgeno en el array
+      #getAllergenPosition(allergen) {
+        return this.#allergens.findIndex((x) => x.name === allergen.name);
+      }
+
+      //Cogemos la posicion del restaurante en el array
+      #getRestaurantPosition(restaurant) {
+        return this.#restaurants.findIndex((x) => x.name === restaurant.name);
+      }
+
       //Adición de categorías
 
       // addCategory(elem) {
@@ -370,12 +385,12 @@ const RestaurantsManager = (function () {
           //Busca la posición de los menús añadidos por parámetros
           const position = this.#getMenuPosition(menu);
 
-          //Si el menú no se encuentra, se añade en el manager
+          //Si no se encuentra, se añade en el manager
           if (position === -1) {
             //Se añade tanto el menú como un array vacío de platos donde más adelante se añadirán los platos
             this.#menus.push({ menu, dishes: [] });
           } else {
-            //Si existe algun menú con el mismo nombre, salta excepción
+            //Si existe algun elemento con el mismo nombre, salta excepción
             throw new AlreadyExistsException();
           }
         }
@@ -390,96 +405,145 @@ const RestaurantsManager = (function () {
           if (position === -1) {
             throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
           } else {
-            this.#menus.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+            this.#menus.splice(position, 1); //Se elimina el elemento con el índice deseado del array
           }
         }
         return this; //Se pueden encadenar llamadas
       }
 
+      //ARREGLAR A PARTIR DE AQUI--------------------------------
       //Adición de alérgenos
-      addAllergen(elem) {
-        if (!(elem instanceof Allergen) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un alérgeno o ser null
-        for (const existingAllergen of this.#allergens) {
-          if (existingAllergen.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el alérgeno ya exista
+      addAllergen(...allergens) {
+        for (const allergen of allergens) {
+          if (!(allergen instanceof Allergen) || allergen === null) {
+            //Si lo introducido no es una alérgeno o es null, salta excepción
+            throw new InvalidTypeException();
+          }
+          //Busca la posición de los alérgenos añadidas por parámetros
+          const position = this.#getAllergenPosition(allergen);
+
+          //Si el alérgeno no se encuentra, se añade en el manager
+          if (position === -1) {
+            this.#allergens.push(allergen);
+          } else {
+            //Si existe otro alérgeno con el mismo nombre, salta excepción
+            throw new AlreadyExistsException();
           }
         }
-        this.#allergens.push(elem); //Añade el alérgeno al array
-        return this; //Se pueden encadenar llamadas
+
+        return this;
       }
 
       //Eliminación de alérgenos
-      removeAllergen(elem) {
-        const index = this.#allergens.findIndex(function (allergen) {
-          //Se busca a través de un index el elemento deseado
-          return allergen.name === elem.name;
-        });
+      removeAllergen(...allergens) {
+        for (const allergen of allergens) {
+          const position = this.#getAllergenPosition(allergen);
 
-        if (index === -1) {
-          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
-        } else {
-          this.#allergens.splice(index, 1); //Se elimina el elemento con el índice deseado del array
-        }
-
-        return this; //Se pueden encadenar llamadas
-      }
-
-      //Adición de platos
-      addDish(elem) {
-        if (!(elem instanceof Dish) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un plato o ser null
-        for (const existingDish of this.#dishes) {
-          if (existingDish.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el plato ya exista
+          if (position === -1) {
+            throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+          } else {
+            this.#allergens.splice(position, 1); //Se elimina el elemento con el índice deseado del array
           }
         }
-        this.#dishes.push(elem); //Añade el plato al array
         return this; //Se pueden encadenar llamadas
       }
 
-      //Eliminación de platos
-      removeDish(elem) {
-        const index = this.#dishes.findIndex(function (dishes) {
-          //Se busca a través de un index el elemento deseado
-          return dishes.name === elem.name;
-        });
+      // //Adición de platos
+      // addDish(elem) {
+      //   if (!(elem instanceof Dish) || elem == null)
+      //     throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un plato o ser null
+      //   for (const existingDish of this.#dishes) {
+      //     if (existingDish.name === elem.name) {
+      //       throw new AlreadyExistsException(); //Lanza excepción en el caso de que el plato ya exista
+      //     }
+      //   }
+      //   this.#dishes.push(elem); //Añade el plato al array
+      //   return this; //Se pueden encadenar llamadas
+      // }
 
-        if (index === -1) {
-          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
-        } else {
-          this.#dishes.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+      //Adición de platos
+      addDish(...dishes) {
+        for (const dish of dishes) {
+          if (!(dish instanceof Dish) || dish == null)
+            throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un plato o ser null
+          //Busca la posición de los platos añadidos por parámetros
+          const position = this.#getDishPosition(dish);
+
+          //Si no se encuentra, se añade en el manager
+          if (position === -1) {
+            //Se añade tanto el plato junto a un array de categorías y otro de alérgenos
+            this.#dishes.push({ dish, categories: [], allergens: [] });
+          } else {
+            //Si existe algun elemento con el mismo nombre, salta excepción
+            throw new AlreadyExistsException();
+          }
         }
+        return this; //Se pueden encadenar llamadas
+      }
 
+      // //Eliminación de platos
+      // removeDish(elem) {
+      //   const index = this.#dishes.findIndex(function (dishes) {
+      //     //Se busca a través de un index el elemento deseado
+      //     return dishes.name === elem.name;
+      //   });
+
+      //   if (index === -1) {
+      //     throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+      //   } else {
+      //     this.#dishes.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+      //   }
+
+      //   return this; //Se pueden encadenar llamadas
+      // }
+
+      //Eliminación de platos
+      removeDish(...dishes) {
+        for (const dish of dishes) {
+          const position = this.#getDishPosition(dish);
+
+          if (position === -1) {
+            throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+          } else {
+            this.#dishes.splice(position, 1); //Se elimina el elemento con el índice deseado del array
+          }
+        }
         return this; //Se pueden encadenar llamadas
       }
 
       //Adición de restaurantes
-      addRestaurant(elem) {
-        if (!(elem instanceof Restaurant) || elem == null)
-          throw new InvalidTypeException(); //Lanza excepción en el caso de no ser un restaurante o ser null
-        for (const existingRestaurant of this.#restaurants) {
-          if (existingRestaurant.name === elem.name) {
-            throw new AlreadyExistsException(); //Lanza excepción en el caso de que el restaurante ya exista
+      addRestaurant(...restaurant) {
+        for (const restaurants of restaurant) {
+          if (!(restaurants instanceof Restaurant) || restaurants === null) {
+            //Si lo introducido no es un restaurante o es null, salta excepción
+            throw new InvalidTypeException();
+          }
+          //Busca la posición de los restaurantes añadidas por parámetros
+          const position = this.#getRestaurantPosition(restaurants);
+
+          //Si el restaurante no se encuentra, se añade en el manager
+          if (position === -1) {
+            this.#restaurants.push(restaurants);
+          } else {
+            //Si existe otro elemento con el mismo nombre, salta excepción
+            throw new AlreadyExistsException();
           }
         }
-        this.#restaurants.push(elem); //Añade el restaurante al array
-        return this; //Se pueden encadenar elementos en este método
+
+        return this;
       }
 
       //Eliminación de restaurantes
-      removeRestaurant(elem) {
-        const index = this.#restaurants.findIndex(function (restaurant) {
-          //Se busca a través de un index el elemento deseado
-          return restaurant.name === elem.name;
-        });
+      removeRestaurant(...restaurant) {
+        for (const restaurants of restaurant) {
+          const position = this.#getRestaurantPosition(restaurants);
 
-        if (index === -1) {
-          throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
-        } else {
-          this.#restaurants.splice(index, 1); //Se elimina el elemento con el índice deseado del array
+          if (position === -1) {
+            throw new NotRegisteredElementException(); //Salta excepción si el elemento no está añadido ya
+          } else {
+            this.#restaurants.splice(position, 1); //Se elimina el elemento con el índice deseado del array
+          }
         }
-
         return this; //Se pueden encadenar llamadas
       }
 
@@ -563,6 +627,16 @@ const RestaurantsManager = (function () {
       //   return this;
       // }
 
+      //TOSTRING - CATEGORIES
+      toStringCategory(separator = "\n") {
+        let str = "";
+        for (const catObj of this.#categories) {
+          const category = catObj;
+          str += category + separator;
+        }
+        return str;
+      }
+
       //TOSTRING - MENU
       toStringMenu(separator = "\n") {
         let str = "";
@@ -573,6 +647,36 @@ const RestaurantsManager = (function () {
           //   // console.log(product.value.toString());
           //   str += product.toString() + separator;
           // }
+        }
+        return str;
+      }
+
+      //TOSTRING - ALLERGEN
+      toStringAllergen(separator = "\n") {
+        let str = "";
+        for (const allObj of this.#allergens) {
+          const allergen = allObj;
+          str += allergen + separator;
+        }
+        return str;
+      }
+
+      //TOSTRING - DISHES
+      toStringDish(separator = "\n") {
+        let str = "";
+        for (const dishObj of this.#dishes) {
+          const dishes = dishObj.dish;
+          str += dishes + separator;
+        }
+        return str;
+      }
+
+      //TOSTRING - RESTAURANT
+      toStringRestaurant(separator = "\n") {
+        let str = "";
+        for (const restObj of this.#restaurants) {
+          const restaurant = restObj;
+          str += restaurant + separator;
         }
         return str;
       }
