@@ -42,25 +42,28 @@ const dish4 = manager.createDish(
   "menestra.jpg"
 );
 
-const category1 = new Category("Legumbres", "aaaaaaaa");
-const category2 = new Category("Pasta", "bbbbbbb");
-const category6 = new Category("Pimiento", "jjjjj");
-const category3 = new Category("Carne", "jjjjj");
+const category1 = manager.createCategory("Legumbres", "aaaaaaaa");
+const category2 = manager.createCategory("Pasta", "bbbbbbb");
+const category6 = manager.createCategory("Pimiento", "jjjjj");
+const category3 = manager.createCategory("Carne", "jjjjj");
 
-const menu1 = new Menu("Diario", "aaaaaa");
-const menu2 = new Menu("Vegano", "bbbbbb");
-const menu6 = new Menu("Infantil", "jjjj");
+const menu1 = manager.createMenu("Diario", "aaaaaa");
+const menu2 = manager.createMenu("Vegano", "bbbbbb");
+const menu6 = manager.createMenu("Infantil", "jjjj");
 
-const allergen1 = new Allergen("Pescado", "");
-const allergen2 = new Allergen("Gluten", "Intolerancia al gluten");
-const allergen6 = new Allergen("Lactosa", "Para intolerantes de la lactosa");
+const allergen1 = manager.createAllergen("Pescado", "");
+const allergen2 = manager.createAllergen("Gluten", "Intolerancia al gluten");
+const allergen6 = manager.createAllergen(
+  "Lactosa",
+  "Para intolerantes de la lactosa"
+);
 
 const coor1 = new Coordinate(41.40338, 2.17403);
 const coor2 = new Coordinate(55.65482, 3.29581);
 
-const restaurant1 = new Restaurant("La Perla", "aaaaaaa", coor1);
-const restaurant2 = new Restaurant("100 Montaditos", "bbbbb");
-const restaurant3 = new Restaurant("Burger King", "cccccc", coor2);
+const restaurant1 = manager.createRestaurant("La Perla", "aaaaaaa", coor1);
+const restaurant2 = manager.createRestaurant("100 Montaditos", "bbbbb");
+const restaurant3 = manager.createRestaurant("Burger King", "cccccc", coor2);
 
 console.log("----ADD CATEGORY----");
 //Se añaden las dos categorías al manager, pudiendo encadenarse

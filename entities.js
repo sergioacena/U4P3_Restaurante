@@ -242,6 +242,7 @@ class Coordinate {
 }
 
 const RestaurantsManager = (function () {
+  //patron singleton
   let instantiated;
   function init() {
     class RestaurantsManager {
@@ -251,6 +252,14 @@ const RestaurantsManager = (function () {
       #dishes = [];
       #menus = []; //Agregacion de platos
       #restaurants = [];
+
+      //Implementación flyweight
+      //Solo lo creo con los siguientes ya que es más óptimo al solo tener nombre y descripción cada uno
+      #productConstructors = {
+        Category,
+        Allergen,
+        Menu,
+      };
 
       //Creamos el constructor de RestaurantsManager
       constructor(
@@ -775,76 +784,88 @@ const RestaurantsManager = (function () {
       findDishes(dish, funcion1, funcion2) {}
 
       //Creación de objetos
+      //Crear plato
       createDish(name, description, ingredients, image) {
         for (const dish of this.#dishes) {
           if (dish.dish.name === name) {
-            // Return the found dish if the name matches
+            //Devuelve el plato en el caso de ya existir
             return dish.dish;
           }
         }
 
-        // Create and return a new Dish if none was found with the matching name
+        //Crea un plato nuevo en el caso de no existir previamente
         const newDish = new Dish(name, description, ingredients, image);
         return newDish;
       }
 
-      //ESTOS TOSTRING LOS HICE POR PROBAR PERO NO ERAN NECESARIOS PARA TESTEOS
-      //TOSTRING - CATEGORIES
-      //   toStringCategory(separator = "\n") {
-      //     let str = "";
-      //     for (const catObj of this.#categories) {
-      //       const category = catObj;
-      //       str += category + separator;
-      //     }
-      //     return str;
-      //   }
+      //Crear menu
+      createMenu(name, description) {
+        for (const menu of this.#menus) {
+          if (menu.menu.name === name) {
+            //Devuelve el menú en el caso de ya existir
+            return menu.menu;
+          }
+        }
 
-      //   //TOSTRING - MENU
-      //   toStringMenu(separator = "\n") {
-      //     let str = "";
-      //     for (const menuObj of this.#menus) {
-      //       const menu = menuObj.menu;
-      //       str += menu + separator;
-      //       // for (const dishes of this.getCategoryProducts(category)) {
-      //       //   // console.log(product.value.toString());
-      //       //   str += product.toString() + separator;
-      //       // }
-      //     }
-      //     return str;
-      //   }
+        //Crea un menú nuevo en el caso de no existir previamente
+        const newMenu = new this.#productConstructors.Menu(name, description);
+        return newMenu;
+      }
 
-      //   //TOSTRING - ALLERGEN
-      //   toStringAllergen(separator = "\n") {
-      //     let str = "";
-      //     for (const allObj of this.#allergens) {
-      //       const allergen = allObj;
-      //       str += allergen + separator;
-      //     }
-      //     return str;
-      //   }
+      //Crear Allergen
+      createAllergen(name, description) {
+        for (const allergen of this.#allergens) {
+          if (allergen.allergens.name === name) {
+            //Devuelve el alérgeno en el caso de ya existir
+            return allergen.allergens;
+          }
+        }
 
-      //   //TOSTRING - DISHES
-      //   toStringDish(separator = "\n") {
-      //     let str = "";
-      //     for (const dishObj of this.#dishes) {
-      //       const dishes = dishObj.dish;
-      //       str += dishes + separator; // Aquí se usa el método toString() de Dish directamente
-      //     }
-      //     return str;
-      //   }
+        //Crea un alérgeno nuevo en el caso de no existir previamente
+        const newAllergen = new this.#productConstructors.Allergen(
+          name,
+          description
+        );
+        return newAllergen;
+      }
 
-      //   //TOSTRING - RESTAURANT
-      //   toStringRestaurant(separator = "\n") {
-      //     let str = "";
-      //     for (const restObj of this.#restaurants) {
-      //       const restaurant = restObj;
-      //       str += restaurant + separator;
-      //     }
-      //     return str;
-      //   }
+      //Crear Category
+      createCategory(name, description) {
+        for (const category of this.#categories) {
+          if (category.categories.name === name) {
+            //Devuelve la categoría en el caso de ya existir
+            return category.categories;
+          }
+        }
+
+        //Crea una categoría nueva en el caso de no existir previamente
+        const newCategory = new this.#productConstructors.Category(
+          name,
+          description
+        );
+        return newCategory;
+      }
+
+      //Crear restaurante
+      createRestaurant(name, description, location) {
+        for (const restaurant of this.#restaurants) {
+          if (restaurant.restaurants.name === name) {
+            //Devuelve el restaurante en el caso de ya existir
+            return restaurant.restaurants;
+          }
+        }
+
+        //Crea un restaurante nuevo en el caso de no existir previamente
+        const newRestaurant = new Restaurant(name, description, location);
+        return newRestaurant;
+      }
     }
 
-    return new RestaurantsManager();
+    //Se crea un nuevo RestaurantManager y se congela
+    let restaurantManager = new RestaurantsManager();
+    Object.freeze(restaurantManager);
+    return restaurantManager;
+    // return new RestaurantsManager();
   }
   return {
     getInstance() {
