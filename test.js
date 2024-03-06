@@ -27,6 +27,12 @@ const dish6 = new Dish(
 );
 
 const dish3 = new Dish("Pimiento", "Rojo", ["Pimiento"], "pimiento.jpg");
+const dish4 = new Dish(
+  "Menestra",
+  "Verduras varias",
+  ["Brocoli, Berenjena"],
+  "menestra.jpg"
+);
 
 const category1 = new Category("Legumbres", "aaaaaaaa");
 const category2 = new Category("Pasta", "bbbbbbb");
@@ -348,8 +354,22 @@ try {
 } catch (error) {
   console.log(error);
 }
+
+try {
+  manager.assignDishToMenu(menu1, dish4); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
 try {
   manager.assignDishToMenu(menu2, dish3); //Se asigna correctamente
+} catch (error) {
+  console.log(error);
+}
+
+//PRUEBO AQUI EL CAMBIAR POSICIONES DE LOS PLATOS EN UN MENÚ
+//Ya que aquí puedo ver todavía el dish1 que aparece bien y no undefined
+try {
+  manager.changeDishesPositionsInMenu(menu1, dish1, dish4); //El dish uno pasa de la posición 0 a la posición 2 correctamente
 } catch (error) {
   console.log(error);
 }

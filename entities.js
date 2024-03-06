@@ -519,7 +519,7 @@ const RestaurantsManager = (function () {
         if (positionD === -1) {
           this.addDish(dish); //Si el plato no existe, hay que crearlo
           positionD = this.#getDishPosition(dish);
-          console.log("Se ha creado un plato que no existía.");
+          console.log("Se ha creado un plato que no existía."); //Solo lo añado aquí por testearlo, funciona en el resto
         }
 
         for (const category of categories) {
@@ -528,7 +528,7 @@ const RestaurantsManager = (function () {
           let positionC = this.#getCategoryPosition(category);
           if (positionC === -1) {
             this.addCategory(category); //Si la categoría no existe, hay que crearla
-            console.log("Se ha creado una categoría que no existía.");
+            console.log("Se ha creado una categoría que no existía."); //Solo lo añado aquí por testearlo, funciona en el resto
           }
 
           //Se asigna la categoría al plato según su posición
@@ -661,6 +661,37 @@ const RestaurantsManager = (function () {
         }
 
         return this;
+      }
+
+      //Cambiar posiciones entre platos de un menú
+      changeDishesPositionsInMenu(menu, dish1, dish2) {
+        if (!(menu instanceof Menu) || menu == null) throw new NullException(); //Si el menu es null salta excepción
+
+        let positionM = this.#getMenuPosition(menu);
+        if (positionM === -1) {
+          throw new NotRegisteredElementException(); //Si no existe el menu, salta excepción
+        }
+
+        if (
+          !(dish1 instanceof Dish) ||
+          dish1 == null ||
+          !(dish2 instanceof Dish) ||
+          dish2 == null
+        ) {
+          throw new NullException(); //Si algún plato es null, salta excepción
+        }
+        let positionD1 = this.#getDishPosition(dish1);
+        let positionD2 = this.#getDishPosition(dish2);
+
+        if (positionD1 === -1 || positionD2 === -1) {
+          throw new NotRegisteredElementException(); //Si algún plato no está registrado en el menú, salta excepción
+        }
+
+        const dishesArray = this.#menus[positionM].dishes;
+        [dishesArray[positionD1], dishesArray[positionD2]] = [
+          dishesArray[positionD2],
+          dishesArray[positionD1],
+        ];
       }
 
       //ESTOS TOSTRING LOS HICE POR PROBAR PERO NO ERAN NECESARIOS PARA TESTEOS
