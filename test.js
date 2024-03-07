@@ -1,10 +1,10 @@
 //Importación clases entities
 import {
-  Dish,
-  Category,
-  Allergen,
-  Menu,
-  Restaurant,
+  // Dish,
+  // Category,
+  // Allergen,
+  // Menu,
+  // Restaurant,
   Coordinate,
   RestaurantsManager,
 } from "./entities.js";
@@ -444,5 +444,19 @@ console.log("----GET DISHES WITH ALLERGEN----");
 //Se ordenan también correctamente los platos por orden alfabético
 let dishesIterator2 = manager.getDishesWithAllergen(allergen1, ordenAlfabetico);
 for (let dish of dishesIterator2) {
+  console.log(`${dish.name}: ${dish.description}`);
+}
+
+console.log("----FIND DISH----");
+
+//Para el orden de la función, voy a usar la funcion "ordenAlfabetico" que había creado antes
+//Creo una función de callback para usar con mi find dish
+function callback(dish, dishName) {
+  return dish.name.includes(dishName);
+}
+
+//No es necesario llamar al ordenAlfabetico, se puede buscar sin necesidad de poner dicha función ya que solo es 1
+let dishesIterator3 = manager.findDishes("Entrecot", callback, ordenAlfabetico);
+for (let dish of dishesIterator3) {
   console.log(`${dish.name}: ${dish.description}`);
 }

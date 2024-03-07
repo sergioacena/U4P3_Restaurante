@@ -80,20 +80,6 @@ class InvalidTypeException extends BaseException {
   }
 }
 
-class InvalidLatitudeException extends BaseException {
-  constructor(fileName, lineNumber) {
-    super("La latitud introducida no es correcta", fileName, lineNumber);
-    this.name = "InvalidLatitudeException";
-  }
-}
-
-class InvalidLongitudeException extends BaseException {
-  constructor(fileName, lineNumber) {
-    super("La longitud introducida no es correcta", fileName, lineNumber);
-    this.name = "InvalidLongitudeException";
-  }
-}
-
 //Exportación de excepciones
 export {
   AbstractClassException,
@@ -104,6 +90,4 @@ export {
   NullException,
   NotRegisteredElementException,
   InvalidTypeException,
-  InvalidLatitudeException,
-  InvalidLongitudeException,
 };

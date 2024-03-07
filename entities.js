@@ -11,8 +11,6 @@ import {
   NullException,
   NotRegisteredElementException,
   InvalidTypeException,
-  InvalidLatitudeException,
-  InvalidLongitudeException,
 } from "./exception.js";
 
 //LISTADO OBJETOS --
@@ -704,6 +702,7 @@ const RestaurantsManager = (function () {
         ];
       }
 
+      //Coger los platos en una categoría
       getDishesInCategory(category, funcion) {
         if (!(category instanceof Category) || category == null) {
           //Si la categoría es null salta excepción
@@ -742,6 +741,7 @@ const RestaurantsManager = (function () {
         return dishesInCategory();
       }
 
+      //Coger los platos con un alérgeno específico
       getDishesWithAllergen(allergen, funcion) {
         if (!(allergen instanceof Allergen) || allergen == null) {
           //Si el alérgeno es null salta excepción
@@ -780,8 +780,27 @@ const RestaurantsManager = (function () {
         return dishesWithAllergen();
       }
 
-      //No se hacerlo / no entiendo bien el pdf a que se refiere con dish + dos funciones
-      findDishes(dish, funcion1, funcion2) {}
+      //Busca un plato con una función de callback y otra de ordenación
+      findDishes(dishName, callback, sortFunction) {
+        //Se filtran los platos usando la función de callback
+        let filteredDishes = this.#dishes.filter((dish) =>
+          callback(dish.dish, dishName)
+        );
+
+        //Se ordenan los platos con respecto a la función de ordenación que le pasemos
+        if (sortFunction && typeof sortFunction === "function") {
+          filteredDishes.sort(sortFunction);
+        }
+
+        //Iteramos sobre los platos filtrados
+        function* dishesFinder() {
+          for (const dishObj of filteredDishes) {
+            yield dishObj.dish;
+          }
+        }
+
+        return dishesFinder();
+      }
 
       //Creación de objetos
       //Crear plato
@@ -879,11 +898,11 @@ const RestaurantsManager = (function () {
 
 //Exportación clases para testeo
 export {
-  Dish,
-  Category,
-  Allergen,
-  Menu,
-  Restaurant,
+  // Dish,
+  // Category,
+  // Allergen,
+  // Menu,
+  // Restaurant,
   Coordinate,
   RestaurantsManager,
 };
